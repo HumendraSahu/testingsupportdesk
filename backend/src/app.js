@@ -1,20 +1,18 @@
 const express = require('express');
 const cors = require('cors');
 
+const pingRoutes = require('./routes/pingRoutes');
+const errorHandler = require('./middleware/errorHandler');
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-// Placeholder route
-app.get('/api/ping', (req, res) => {
-  res.json({ message: 'pong' });
-});
+// Routes
+app.use('/api', pingRoutes);
 
-// Error handling middleware placeholder
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ error: 'Internal Server Error' });
-});
+// Global error handler
+app.use(errorHandler);
 
 module.exports = app;
