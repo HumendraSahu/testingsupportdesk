@@ -3,7 +3,6 @@ const asyncHandler = require('../utils/asyncHandler');
 const apiResponse = require('../utils/apiResponse');
 const apiError = require('../utils/apiError');
 const logger = require('../services/logger');
-const { redisClient } = require('../db/redis');
 
 const createArticle = asyncHandler(async (req, res) => {
   const { title, content, category, tags, isPublic } = req.body;
@@ -16,13 +15,6 @@ const createArticle = asyncHandler(async (req, res) => {
     createdBy: req.user.id,
   });
   await article.save();
-  await redisClient.set(
-    `kbArticle:${article._id}`,
-    JSON.stringify(article),
-    {
-      EX: 3600,
-    }
-  );
   logger.log('create', req.user.id, article._id);
   return res
     .status(201)
@@ -41,12 +33,7 @@ const getAllArticles = asyncHandler(async (req, res) => {
       { content: new RegExp(search, 'i') },
     ];
   }
-  const cacheKey = `kbArticles:${category || 'all'}:${search || ''}:${page}:${limit}`;
-  const cached = await redisClient.get(cacheKey);
-  if (cached) {
-    const data = JSON.parse(cached);
-    return res.status(200).json(new apiResponse(200, data));
-  }
+
   const options = {
     page: parseInt(page, 10),
     limit: parseInt(limit, 10),
@@ -62,23 +49,14 @@ const getAllArticles = asyncHandler(async (req, res) => {
       limit: result.limit,
     },
   };
-  await redisClient.set(cacheKey, JSON.stringify(data), { EX: 3600 });
   return res.status(200).json(new apiResponse(200, data));
 });
 
 const getArticleById = asyncHandler(async (req, res) => {
-  const cacheKey = `kbArticle:${req.params.id}`;
-  const cached = await redisClient.get(cacheKey);
-  if (cached) {
-    const article = JSON.parse(cached);
-    return res.status(200).json(new apiResponse(200, { article }));
-  }
-
   const article = await KBArticle.findById(req.params.id);
   if (!article) {
     throw new apiError(404, 'Article not found');
   }
-  await redisClient.set(cacheKey, JSON.stringify(article), { EX: 3600 });
   return res.status(200).json(new apiResponse(200, { article }));
 });
 
@@ -94,11 +72,6 @@ const updateArticle = asyncHandler(async (req, res) => {
   if (tags !== undefined) article.tags = tags;
   if (isPublic !== undefined) article.isPublic = isPublic;
   await article.save();
-  await redisClient.set(
-    `kbArticle:${article._id}`,
-    JSON.stringify(article),
-    { EX: 3600 }
-  );
   logger.log('update', req.user.id, article._id);
   return res
     .status(200)
@@ -111,7 +84,6 @@ const deleteArticle = asyncHandler(async (req, res) => {
     throw new apiError(404, 'Article not found');
   }
   await article.remove();
-  await redisClient.del(`kbArticle:${article._id}`);
   logger.log('delete', req.user.id, article._id);
   return res
     .status(200)

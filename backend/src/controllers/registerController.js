@@ -2,17 +2,11 @@ const User = require('../models/User');
 const asyncHandler = require('../utils/asyncHandler');
 const apiResponse = require('../utils/apiResponse');
 const apiError = require('../utils/apiError');
-const { redisClient } = require('../db/redis');
 const { createToken } = require('../services/tokenService');
 
 const registerAdmin = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, company, phone } = req.body;
   const normalizedEmail = email.toLowerCase();
-  const cacheKey = `user:${normalizedEmail}`;
-
-  if (await redisClient.get(cacheKey)) {
-    throw new apiError(400, 'Email already exists');
-  }
 
   const existing = await User.aggregate([
     { $match: { email: normalizedEmail } },
@@ -20,7 +14,6 @@ const registerAdmin = asyncHandler(async (req, res) => {
   ]);
 
   if (existing.length > 0) {
-    await redisClient.set(cacheKey, '1');
     throw new apiError(400, 'Email already exists');
   }
 
@@ -34,7 +27,6 @@ const registerAdmin = asyncHandler(async (req, res) => {
   });
 
   await newUser.save();
-  await redisClient.set(cacheKey, '1');
   const token = createToken({ id: newUser._id, role: newUser.role });
 
   return res
@@ -54,11 +46,6 @@ const registerContact = asyncHandler(async (req, res) => {
     language,
   } = req.body;
   const normalizedEmail = email.toLowerCase();
-  const cacheKey = `user:${normalizedEmail}`;
-
-  if (await redisClient.get(cacheKey)) {
-    throw new apiError(400, 'Email already exists');
-  }
 
   const existing = await User.aggregate([
     { $match: { email: normalizedEmail } },
@@ -66,7 +53,6 @@ const registerContact = asyncHandler(async (req, res) => {
   ]);
 
   if (existing.length > 0) {
-    await redisClient.set(cacheKey, '1');
     throw new apiError(400, 'Email already exists');
   }
 
@@ -83,7 +69,6 @@ const registerContact = asyncHandler(async (req, res) => {
   });
 
   await newUser.save();
-  await redisClient.set(cacheKey, '1');
 
   const token = createToken({ id: newUser._id, role: newUser.role });
 
@@ -103,11 +88,6 @@ const registerAgent = asyncHandler(async (req, res) => {
     groups,
   } = req.body;
   const normalizedEmail = email.toLowerCase();
-  const cacheKey = `user:${normalizedEmail}`;
-
-  if (await redisClient.get(cacheKey)) {
-    throw new apiError(400, 'Email already exists');
-  }
 
   const existing = await User.aggregate([
     { $match: { email: normalizedEmail } },
@@ -115,7 +95,6 @@ const registerAgent = asyncHandler(async (req, res) => {
   ]);
 
   if (existing.length > 0) {
-    await redisClient.set(cacheKey, '1');
     throw new apiError(400, 'Email already exists');
   }
 
@@ -131,7 +110,6 @@ const registerAgent = asyncHandler(async (req, res) => {
   });
 
   await newUser.save();
-  await redisClient.set(cacheKey, '1');
 
   const token = createToken({ id: newUser._id, role: newUser.role });
 
