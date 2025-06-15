@@ -18,7 +18,17 @@ function initSocket(server) {
   });
 
   const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-  const pubClient = createClient({ url: redisUrl });
+  const redisOptions = { url: redisUrl };
+
+  if (process.env.REDIS_USERNAME) {
+    redisOptions.username = process.env.REDIS_USERNAME;
+  }
+
+  if (process.env.REDIS_PASSWORD) {
+    redisOptions.password = process.env.REDIS_PASSWORD;
+  }
+
+  const pubClient = createClient(redisOptions);
   const subClient = pubClient.duplicate();
 
   Promise.all([pubClient.connect(), subClient.connect()])
