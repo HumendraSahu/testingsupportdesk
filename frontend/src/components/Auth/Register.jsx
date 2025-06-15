@@ -13,9 +13,10 @@ const Register = () => {
     workEmail: '',
     company: '',
     phone: '',
+    password: '',
   });
   const [error, setError] = useState(null);
-  const { firstName, lastName, workEmail, company, phone } = formData;
+  const { firstName, lastName, workEmail, company, phone, password } = formData;
 
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,6 +32,7 @@ const Register = () => {
         email: workEmail,
         company,
         phone,
+        password,
       });
       dispatch(setUser(user));
       navigate('/login');
@@ -98,9 +100,23 @@ const Register = () => {
             onChange={onChange}
           />
         </div>
+        <div className="mb-3">
+          <label className="form-label">Password</label>
+          <input
+            type="password"
+            className="form-control"
+            name="password"
+            value={password}
+            onChange={onChange}
+            required
+          />
+        </div>
         <button type="submit" className="btn btn-primary w-100">
           Register
         </button>
+        <div className="mt-3 text-center">
+          <a href="/login">Back to Login</a>
+        </div>
       </form>
     </div>
   );
