@@ -3,7 +3,7 @@ const {
   registerAdmin,
   registerContact,
   registerAgent,
-} = require('../controllers/user/registerController');
+} = require('../controllers/registerController');
 
 const router = express.Router();
 

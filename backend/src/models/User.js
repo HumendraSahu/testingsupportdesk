@@ -13,7 +13,10 @@ const UserSchema = new mongoose.Schema(
     // Admin specific
     firstName: String,
     lastName: String,
-    company: String,
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+    },
     phone: String,
 
     // Contact/Agent specific
