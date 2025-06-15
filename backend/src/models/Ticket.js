@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const TicketSchema = new mongoose.Schema(
   {
@@ -61,5 +62,7 @@ const TicketSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+TicketSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Ticket', TicketSchema);
