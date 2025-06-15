@@ -7,4 +7,9 @@ export const registerAdmin = async (data) => {
   return response.data;
 };
 
-export default { registerAdmin };
+export const login = async (data) => {
+  const response = await axios.post('/api/login', data);
+  return response.data;
+};
+
+export default { registerAdmin, login };
