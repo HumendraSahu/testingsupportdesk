@@ -84,6 +84,7 @@ exports.registerContact = async (req, res, next) => {
 exports.registerAgent = async (req, res, next) => {
   try {
     const {
+      fullName,
       email,
       agentType,
       availability,
@@ -106,6 +107,7 @@ exports.registerAgent = async (req, res, next) => {
 
     const newUser = new User({
       role: 'agent',
+      fullName,
       email: normalizedEmail,
       agentType,
       availability,

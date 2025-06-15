@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema(
     company: String,
     phone: String,
 
-    // Contact specific
+    // Contact/Agent specific
     fullName: String,
     address: String,
     timezone: String,
