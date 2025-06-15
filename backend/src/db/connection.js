@@ -1,22 +1,23 @@
 const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
 
-let gridfsBucket;
+let gfs;
 
-async function connect() {
-  const uri = process.env.MONGO_URI;
-  if (!uri) {
-    throw new Error('MONGO_URI is not defined');
+const connectDB = async () => {
+  try {
+    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost/helpdesk';
+    const conn = await mongoose.connect(mongoURI);
+
+    Grid.mongo = mongoose.mongo;
+    gfs = Grid(conn.connection.db, mongoose.mongo);
+
+    console.log('✅ MongoDB connected successfully');
+  } catch (err) {
+    console.error('❌ MongoDB connection failed:', err.message);
+    process.exit(1);
   }
-
-  await mongoose.connect(uri);
-  Grid.mongo = mongoose.mongo;
-  gridfsBucket = Grid(mongoose.connection.db, mongoose.mongo);
-  return mongoose.connection;
-}
-
-module.exports = {
-  connect,
-  connection: mongoose.connection,
-  gridfsBucket,
 };
+
+const getGridFS = () => gfs;
+
+module.exports = { connectDB, getGridFS };
