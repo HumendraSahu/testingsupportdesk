@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const KBArticleSchema = new mongoose.Schema(
   {
@@ -14,5 +15,7 @@ const KBArticleSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+KBArticleSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('KBArticle', KBArticleSchema);

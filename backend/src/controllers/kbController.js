@@ -30,7 +30,7 @@ const createArticle = asyncHandler(async (req, res) => {
 });
 
 const getAllArticles = asyncHandler(async (req, res) => {
-  const { category, search } = req.query;
+  const { category, search, page = 1, limit = 10 } = req.query;
   const filter = {};
   if (category) {
     filter.category = category;
@@ -41,15 +41,29 @@ const getAllArticles = asyncHandler(async (req, res) => {
       { content: new RegExp(search, 'i') },
     ];
   }
-  const cacheKey = `kbArticles:${category || 'all'}:${search || ''}`;
+  const cacheKey = `kbArticles:${category || 'all'}:${search || ''}:${page}:${limit}`;
   const cached = await redisClient.get(cacheKey);
   if (cached) {
-    const articles = JSON.parse(cached);
-    return res.status(200).json(new apiResponse(200, { articles }));
+    const data = JSON.parse(cached);
+    return res.status(200).json(new apiResponse(200, data));
   }
-  const articles = await KBArticle.find(filter);
-  await redisClient.set(cacheKey, JSON.stringify(articles), { EX: 3600 });
-  return res.status(200).json(new apiResponse(200, { articles }));
+  const options = {
+    page: parseInt(page, 10),
+    limit: parseInt(limit, 10),
+    sort: { createdAt: -1 },
+  };
+  const result = await KBArticle.paginate(filter, options);
+  const data = {
+    articles: result.docs,
+    pagination: {
+      totalDocs: result.totalDocs,
+      totalPages: result.totalPages,
+      page: result.page,
+      limit: result.limit,
+    },
+  };
+  await redisClient.set(cacheKey, JSON.stringify(data), { EX: 3600 });
+  return res.status(200).json(new apiResponse(200, data));
 });
 
 const getArticleById = asyncHandler(async (req, res) => {
