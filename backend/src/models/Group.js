@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const GroupSchema = new mongoose.Schema(
   {
@@ -7,5 +8,7 @@ const GroupSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+GroupSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Group', GroupSchema);

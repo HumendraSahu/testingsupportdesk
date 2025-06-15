@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const SLASchema = new mongoose.Schema(
   {
@@ -7,5 +8,7 @@ const SLASchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+SLASchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('SLA', SLASchema);
