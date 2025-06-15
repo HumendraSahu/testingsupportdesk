@@ -2,8 +2,38 @@ const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    email: { type: String, required: true }
+    role: {
+      type: String,
+      enum: ['admin', 'contact', 'agent'],
+      required: true,
+    },
+    // common fields
+    email: { type: String, required: true },
+
+    // Admin specific
+    firstName: String,
+    lastName: String,
+    company: String,
+    phone: String,
+
+    // Contact specific
+    fullName: String,
+    address: String,
+    timezone: String,
+    tags: [String],
+    language: String,
+
+    // Agent specific
+    agentType: {
+      type: String,
+      enum: ['collaborator', 'support'],
+    },
+    availability: {
+      type: String,
+      enum: ['full-time', 'occasional'],
+    },
+    signature: String,
+    groups: [String],
   },
   { timestamps: true }
 );
