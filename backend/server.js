@@ -1,7 +1,7 @@
 require('dotenv').config();
 const http = require('http');
 const app = require('./src/app');
-const { connect: connectDb } = require('./src/db/connection');
+const { connectDB } = require('./src/db/connection');
 const { connectRedis } = require('./src/db/redis');
 const { initSocket } = require('./src/sockets');
 
@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000;
 
 async function start() {
   try {
-    await connectDb();
+    await connectDB();
     await connectRedis();
     const server = http.createServer(app);
     initSocket(server);
