@@ -10,6 +10,7 @@ const UserSchema = new mongoose.Schema(
     },
     // common fields
     email: { type: String, required: true },
+    password: { type: String, required: true },
 
     // Admin specific
     firstName: String,
