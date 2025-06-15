@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = '/api/register/';
+const API_URL = '/api/v2/register/';
 
 export const registerAdmin = async (data) => {
   const response = await axios.post(`${API_URL}admin`, data);
@@ -8,7 +8,7 @@ export const registerAdmin = async (data) => {
 };
 
 export const login = async (data) => {
-  const response = await axios.post('/api/login', data);
+  const response = await axios.post('/api/v2/auth/login', data);
   return response.data;
 };
 

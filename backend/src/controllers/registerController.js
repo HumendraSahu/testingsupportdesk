@@ -3,9 +3,10 @@ const asyncHandler = require('../utils/asyncHandler');
 const apiResponse = require('../utils/apiResponse');
 const apiError = require('../utils/apiError');
 const { createToken } = require('../services/tokenService');
+const { hashPassword } = require('../services/passwordService');
 
 const registerAdmin = asyncHandler(async (req, res) => {
-  const { firstName, lastName, email, company, phone } = req.body;
+  const { firstName, lastName, email, company, phone, password } = req.body;
   const normalizedEmail = email.toLowerCase();
 
   const existing = await User.aggregate([
@@ -24,6 +25,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
     company,
     phone,
     email: normalizedEmail,
+    password: hashPassword(password),
   });
 
   await newUser.save();
