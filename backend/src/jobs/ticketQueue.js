@@ -1,7 +1,18 @@
 const { Queue, Worker } = require('bullmq');
 const IORedis = require('ioredis');
 
-const connection = new IORedis(process.env.REDIS_URL || 'redis://localhost:6379');
+const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+const redisOptions = { url: redisUrl };
+
+if (process.env.REDIS_USERNAME) {
+  redisOptions.username = process.env.REDIS_USERNAME;
+}
+
+if (process.env.REDIS_PASSWORD) {
+  redisOptions.password = process.env.REDIS_PASSWORD;
+}
+
+const connection = new IORedis(redisOptions);
 
 const ticketQueue = new Queue('ticketQueue', { connection });
 
