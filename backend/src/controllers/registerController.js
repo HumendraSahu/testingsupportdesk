@@ -1,9 +1,9 @@
-const User = require('../../models/User');
-const asyncHandler = require('../../utils/asyncHandler');
-const apiResponse = require('../../utils/apiResponse');
-const apiError = require('../../utils/apiError');
-const { redisClient } = require('../../db/redis');
-const { createToken } = require('../../services/tokenService');
+const User = require('../models/User');
+const asyncHandler = require('../utils/asyncHandler');
+const apiResponse = require('../utils/apiResponse');
+const apiError = require('../utils/apiError');
+const { redisClient } = require('../db/redis');
+const { createToken } = require('../services/tokenService');
 
 const registerAdmin = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, company, phone } = req.body;
