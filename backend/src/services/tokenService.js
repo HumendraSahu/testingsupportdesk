@@ -1,10 +1,17 @@
-// JWT creation and verification service placeholder
-function createToken(payload) {
-  // TODO: create JWT
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'change_this_secret';
+
+function createToken(payload, expiresIn = '1h') {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn });
 }
 
 function verifyToken(token) {
-  // TODO: verify JWT
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch (err) {
+    return null;
+  }
 }
 
 module.exports = {
