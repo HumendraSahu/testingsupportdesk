@@ -12,4 +12,9 @@ export const login = async (data) => {
   return response.data;
 };
 
-export default { registerAdmin, login };
+export const checkUsersExist = async () => {
+  const response = await axios.get('/api/v2/users/exist');
+  return response.data;
+};
+
+export default { registerAdmin, login, checkUsersExist };

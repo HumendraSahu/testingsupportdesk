@@ -12,6 +12,7 @@ import Forums from './pages/Forums';
 import Analytics from './pages/Analytics';
 import AdminSettings from './pages/AdminSettings';
 import Login from './pages/Login';
+import Startup from './pages/Startup';
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
       <Sidebar />
       <div className="container-fluid">
         <Routes>
+          <Route path="/" element={<Startup />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
