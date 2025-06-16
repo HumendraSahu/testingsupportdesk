@@ -19,9 +19,21 @@ This repository contains a simple Node.js support desk application with a fronte
    REDIS_PASSWORD=yourpassword
    ```
 
-3. Start the development server:
+3. Start the backend development server:
    ```bash
    npm run dev
    ```
+
+4. From the `frontend` directory install dependencies and run the React dev server:
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+
+   The frontend will be available at <http://localhost:5173>.
+
+   Environment variables are not required for the frontend by default, so the
+   `.env` file has been removed to avoid confusion.
 
 The server expects a running MongoDB instance and, if Redis requires a password, the credentials must be supplied through the environment variables shown above.
